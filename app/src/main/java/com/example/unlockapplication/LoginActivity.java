@@ -23,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     int curBrightnessValue;
+    Thread brightnessThread;
     Button LOGIN_BTN;
 
     @Override
@@ -32,9 +33,19 @@ public class LoginActivity extends AppCompatActivity {
 
         runBrightnessThread();
 
+        tryToLogIn();
+
         findViews();
         initViews();
 
+    }
+
+    private boolean tryToLogIn() {
+        return matchBrightnessToMinutes() && matchInputToTemp();
+    }
+
+    private boolean matchInputToTemp() {
+        return true;
     }
 
 
@@ -47,7 +58,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                if (matchBrightnessToMinutes()) {
+                if (tryToLogIn()) {
+                    brightnessThread.interrupt();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
@@ -57,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void runBrightnessThread() {
-        Thread brightnessThread = new Thread() {
+        brightnessThread = new Thread() {
             @Override
             public void run() {
                 try {
