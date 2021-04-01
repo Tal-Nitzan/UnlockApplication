@@ -5,14 +5,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    android:layoutDirection="ltr"
+    tools:context=".LoginActivity" >
+
+    <LinearLayout
+        android:id="@+id/login_LAYOUT_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/login_BTN_submit">
+        <TextView
+            android:id="@+id/login_TXT_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/temperature_guess"
+            android:textSize="20sp" />
+        <EditText
+            android:id="@+id/login_EDT_temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="50px"
+            android:maxWidth="250px"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:maxLength="4"
+            android:hint="0" />
+        <TextView
+            android:id="@+id/login_TXT_celsius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/celsius"
+            android:textSize="20sp" />
+        </LinearLayout>
+
 
     <Button
+        android:id="@+id/login_BTN_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:text="Button"
-        android:id="@+id/LOGIN_BTN"/>
+        android:text="Submit"/>
 
 </RelativeLayout>

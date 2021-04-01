@@ -2,60 +2,64 @@ package com.example.unlockapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
 
 
-    int curBrightnessValue;
-    Thread brightnessThread;
-    Button LOGIN_BTN;
+    private static final int MAX_NUM_OF_ATTEMPTS = 3;
+    private int curBrightnessValue;
+    private Thread brightnessThread;
+    private Button login_BTN_submit;
+    private EditText login_EDT_temperature;
+    private TemperatureHandler temperatureHandler;
+    private int numOfAttempts;
 
     @Override
     public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        this.temperatureHandler = new TemperatureHandler(this);
         runBrightnessThread();
-
-        tryToLogIn();
 
         findViews();
         initViews();
-
     }
 
     private boolean tryToLogIn() {
+        if (numOfAttempts == MAX_NUM_OF_ATTEMPTS) {
+            return false;
+        }
         return matchBrightnessToMinutes() && matchInputToTemp();
     }
 
     private boolean matchInputToTemp() {
-        return true;
+        try {
+            float currentTemperature = this.temperatureHandler.getCurrentCPUTemperature();
+            float guessTemperature = Float.parseFloat(login_EDT_temperature.getText().toString());
+            return currentTemperature == guessTemperature;
+        } catch (NumberFormatException e) {
+            Log.e("pttt", e.getMessage());
+            return false;
+        }
     }
 
 
     private void findViews() {
-        LOGIN_BTN = findViewById(R.id.LOGIN_BTN);
+        login_BTN_submit = findViewById(R.id.login_BTN_submit);
+        login_EDT_temperature = findViewById(R.id.login_EDT_temperature);
     }
 
     private void initViews() {
-        LOGIN_BTN.setOnClickListener(new View.OnClickListener() {
-
+        login_BTN_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (tryToLogIn()) {
@@ -76,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                     while(true) {
                         sleep(100);
                         curBrightnessValue = android.provider.Settings.System.getInt(getContentResolver(), android.provider.Settings.System.SCREEN_BRIGHTNESS);
-                        Log.d("pttt", "" + curBrightnessValue);
+                        //Log.d("pttt", "" + curBrightnessValue);
                     }
                 } catch (Settings.SettingNotFoundException | InterruptedException e) {
                     e.printStackTrace();

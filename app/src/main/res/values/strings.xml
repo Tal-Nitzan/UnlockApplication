@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">UnlockApplication</string>
+    <string name="temperature_guess">CPU temperature?</string>
+    <string name="celsius">&#176;C</string>
 </resources>
