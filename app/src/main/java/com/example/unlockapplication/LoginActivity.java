@@ -2,7 +2,12 @@ package com.example.unlockapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -22,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText login_EDT_temperature;
     private TemperatureHandler temperatureHandler;
     private int numOfAttempts;
+    private CameraManager cameraManager;
+    private boolean flashState;
 
     @Override
     public final void onCreate(Bundle savedInstanceState) {
@@ -29,16 +36,28 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         this.temperatureHandler = new TemperatureHandler(this);
         runBrightnessThread();
-
         findViews();
         initViews();
     }
+
+    CameraManager.TorchCallback torchCallback = new CameraManager.TorchCallback() {
+        @Override
+        public void onTorchModeUnavailable(String cameraId) {
+            super.onTorchModeUnavailable(cameraId);
+        }
+
+        @Override
+        public void onTorchModeChanged(String cameraId, boolean enabled) {
+            super.onTorchModeChanged(cameraId, enabled);
+            flashState = enabled;
+        }
+    };
 
     private boolean tryToLogIn() {
         if (numOfAttempts == MAX_NUM_OF_ATTEMPTS) {
             return false;
         }
-        return matchBrightnessToMinutes() && matchInputToTemp();
+        return matchBrightnessToMinutes() && matchInputToTemp() && flashState;
     }
 
     private boolean matchInputToTemp() {
@@ -59,9 +78,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        cameraManager = (CameraManager)getSystemService(Context.CAMERA_SERVICE);
+        cameraManager.registerTorchCallback(torchCallback, null);// (callback, handler)
         login_BTN_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("pddd", "" + flashState);
                 if (tryToLogIn()) {
                     brightnessThread.interrupt();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
