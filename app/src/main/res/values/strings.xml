@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">UnlockApplication</string>
+    <string name="instructions">In order to login you will be needed to:</string>
+    <string name="instruction_1">1) Brightness must be a modulo of the current minute</string>
+    <string name="instruction_2">2) Guess the CPU temperature</string>
+    <string name="instruction_3">3) Enable camera torch</string>
     <string name="temperature_guess">CPU temperature?</string>
     <string name="celsius">&#176;C</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="login_successfully">Login successfully</string>
+    <string name="login_failed">Login failed</string>
+    <string name="invalid_inpit">Username or Password are invalid</string>
+    <string name="max_login_attempts">User reached max login attemps</string>
 </resources>

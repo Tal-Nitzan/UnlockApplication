@@ -24,7 +24,6 @@ public class TemperatureHandler {
         }
     }
 
-    @SuppressLint("NewApi")
     private String readFile(String file, char endChar) {
         // Permit disk reads here, as /proc/meminfo isn't really "on
         // disk" and should be fast.  TODO: make BlockGuard ignore
