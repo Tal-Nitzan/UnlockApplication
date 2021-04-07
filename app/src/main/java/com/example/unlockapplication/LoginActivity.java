@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -95,9 +96,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean matchInputToTemp() {
         try {
-            float currentTemperature = this.temperatureHandler.getCurrentCPUTemperature();
-            float guessTemperature = Float.parseFloat(login_EDT_temperature.getText().toString());
-            Log.i("Temperature", "currentTemperature: " + currentTemperature);
+            int currentTemperature = (int)this.temperatureHandler.getCurrentCPUTemperature();
+            int guessTemperature = Integer.parseInt(login_EDT_temperature.getText().toString());
+            Log.i("Temperature", "currentTemperature: " + (int)currentTemperature);
             return currentTemperature == guessTemperature;
         } catch (NumberFormatException e) {
             Log.e("Temperature", e.getMessage());
@@ -118,7 +119,15 @@ public class LoginActivity extends AppCompatActivity {
         login_BTN_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tryToLogIn();
+                if (tryToLogIn()) {
+                    login_BTN_login.setEnabled(false);
+                }
+                try {
+                    // Lower keyboard if its shown
+                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                } catch (Exception e) {
+                }
             }
         });
         startTimer();
@@ -134,6 +143,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     boolean matchBrightnessToMinutes() {
+        if (Calendar.getInstance().get(Calendar.MINUTE) == 0) {
+            return true;
+        }
         return (this.brightnessHandler.getCurrentBrightnessValue() % Calendar.getInstance().get(Calendar.MINUTE)) == 0;
     }
 }
